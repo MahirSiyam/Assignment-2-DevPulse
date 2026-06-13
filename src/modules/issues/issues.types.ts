@@ -10,6 +10,12 @@ export interface CreateIssueInput {
   type: IssueType;
 }
 
+export interface UpdateIssueInput {
+  title?: string;
+  description?: string;
+  type?: IssueType;
+}
+
 export interface ListIssuesQuery {
   sort: IssueSort;
   type?: IssueType;

@@ -6,6 +6,7 @@ export type {
   IssueStatus,
   IssueSort,
   CreateIssueInput,
+  UpdateIssueInput,
   ListIssuesQuery,
   IssueReporter,
   IssueWithReporter,

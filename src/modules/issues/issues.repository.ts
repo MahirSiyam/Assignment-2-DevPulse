@@ -1,7 +1,7 @@
-import { query } from '../../utils/databaseHelper';
+import { query, queryOne } from '../../utils/databaseHelper';
 import { AppError } from '../../utils/AppError';
 import type { UserRole } from '../auth/auth.types';
-import type { CreateIssueInput, Issue, ListIssuesQuery } from './issues.types';
+import type { CreateIssueInput, Issue, ListIssuesQuery, UpdateIssueInput } from './issues.types';
 
 export interface ReporterRow {
   id: number;
@@ -56,6 +56,24 @@ export async function findIssues(filters: ListIssuesQuery): Promise<Issue[]> {
   return rows;
 }
 
+export async function findIssueById(id: number): Promise<Issue | null> {
+  return queryOne<Issue>(
+    `SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+     FROM issues
+     WHERE id = $1`,
+    [id],
+  );
+}
+
+export async function findReporterById(id: number): Promise<ReporterRow | null> {
+  return queryOne<ReporterRow>(
+    `SELECT id, name, role
+     FROM users
+     WHERE id = $1`,
+    [id],
+  );
+}
+
 export async function findReportersByIds(ids: number[]): Promise<ReporterRow[]> {
   if (ids.length === 0) return [];
 
@@ -69,4 +87,37 @@ export async function findReportersByIds(ids: number[]): Promise<ReporterRow[]> 
   );
 
   return rows;
+}
+
+export async function updateIssue(id: number, input: UpdateIssueInput): Promise<Issue | null> {
+  const setClauses: string[] = [];
+  const params: unknown[] = [];
+
+  if (input.title !== undefined) {
+    params.push(input.title);
+    setClauses.push(`title = $${params.length}`);
+  }
+
+  if (input.description !== undefined) {
+    params.push(input.description);
+    setClauses.push(`description = $${params.length}`);
+  }
+
+  if (input.type !== undefined) {
+    params.push(input.type);
+    setClauses.push(`type = $${params.length}`);
+  }
+
+  setClauses.push('updated_at = CURRENT_TIMESTAMP');
+  params.push(id);
+
+  const { rows } = await query<Issue>(
+    `UPDATE issues
+     SET ${setClauses.join(', ')}
+     WHERE id = $${params.length}
+     RETURNING id, title, description, type, status, reporter_id, created_at, updated_at`,
+    params,
+  );
+
+  return rows[0] ?? null;
 }
