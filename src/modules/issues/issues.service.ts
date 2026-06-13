@@ -81,3 +81,17 @@ export async function updateIssue(
 
   return mergeIssueWithReporter(updatedIssue, reporter);
 }
+
+export async function deleteIssue(id: number): Promise<void> {
+  const existingIssue = await issuesRepository.findIssueById(id);
+
+  if (!existingIssue) {
+    throw AppError.notFound('Issue not found');
+  }
+
+  const deleted = await issuesRepository.deleteIssueById(id);
+
+  if (!deleted) {
+    throw AppError.internal('Failed to delete issue');
+  }
+}

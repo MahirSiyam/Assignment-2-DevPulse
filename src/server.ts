@@ -1,6 +1,6 @@
 import { createApp } from './app';
 import { config } from './config/index';
-import { pool, testConnection } from './config/database';
+import { pool, testConnection } from './utils/databaseHelper';
 import { logger } from './utils/logger';
 
 async function bootstrap(): Promise<void> {

@@ -1,16 +1,11 @@
 import type { Response } from 'express';
-import type { ErrorResponse, SuccessResponse } from '../types/api';
+import type { SuccessResponse } from '../types/api';
+import { sendHttpError, type ErrorResponseOptions } from './errorResponse';
 
 interface SuccessOptions<T> {
   statusCode?: number;
   message?: string;
   data: T;
-}
-
-interface ErrorOptions {
-  statusCode?: number;
-  message: string;
-  errors?: Record<string, string | string[]>;
 }
 
 export function sendResponse<T = Record<string, unknown>>(
@@ -26,12 +21,6 @@ export function sendResponse<T = Record<string, unknown>>(
   res.status(options.statusCode ?? 200).json(body);
 }
 
-export function sendError(res: Response, options: ErrorOptions): void {
-  const body: ErrorResponse = {
-    success: false,
-    message: options.message,
-    errors: options.errors ?? {},
-  };
-
-  res.status(options.statusCode ?? 400).json(body);
+export function sendError(res: Response, options: ErrorResponseOptions): void {
+  sendHttpError(res, options);
 }

@@ -1,8 +1,17 @@
 import type { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/AppError';
-import { sendError } from '../utils/sendResponse';
+import { sendHttpError } from '../utils/errorResponse';
+import { HTTP_STATUS, HTTP_ERROR_MESSAGES } from '../constants/httpStatus';
 import { config } from '../config/index';
 import { logger } from '../utils/logger';
+
+function resolveClientMessage(err: AppError): string {
+  if (err.statusCode === HTTP_STATUS.INTERNAL_SERVER_ERROR && config.env === 'production') {
+    return HTTP_ERROR_MESSAGES[HTTP_STATUS.INTERNAL_SERVER_ERROR] ?? 'Internal server error';
+  }
+
+  return err.message;
+}
 
 export function globalErrorHandler(
   err: Error,
@@ -11,23 +20,23 @@ export function globalErrorHandler(
   _next: NextFunction,
 ): void {
   if (err instanceof AppError) {
-    sendError(res, {
+    if (!err.isOperational || err.statusCode >= 500) {
+      logger.error(err.message, config.env === 'development' ? { stack: err.stack } : undefined);
+    }
+
+    sendHttpError(res, {
       statusCode: err.statusCode,
-      message: err.message,
+      message: resolveClientMessage(err),
       errors: err.errors,
     });
     return;
   }
 
-  if (config.env === 'development') {
-    logger.error(err.message, { stack: err.stack });
-  } else {
-    logger.error(err.message);
-  }
+  logger.error(err.message, config.env === 'development' ? { stack: err.stack } : undefined);
 
-  sendError(res, {
-    statusCode: 500,
-    message: 'Internal server error',
+  sendHttpError(res, {
+    statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    message: HTTP_ERROR_MESSAGES[HTTP_STATUS.INTERNAL_SERVER_ERROR] ?? 'Internal server error',
     errors: {},
   });
 }

@@ -1,17 +1,17 @@
 import jwt from 'jsonwebtoken';
-import { jwtConfig } from '../config/auth';
+import { config } from '../config/index';
 import { AppError } from './AppError';
 import type { JwtPayload } from '../modules/auth/auth.types';
 
 export function signAccessToken(payload: JwtPayload): string {
-  return jwt.sign(payload, jwtConfig.access.secret, {
-    expiresIn: jwtConfig.access.expiresIn,
+  return jwt.sign(payload, config.jwt.accessSecret, {
+    expiresIn: config.jwt.accessExpiresIn,
   } as jwt.SignOptions);
 }
 
 export function verifyAccessToken(token: string): JwtPayload {
   try {
-    const decoded = jwt.verify(token, jwtConfig.access.secret);
+    const decoded = jwt.verify(token, config.jwt.accessSecret);
 
     if (!isJwtPayload(decoded)) {
       throw AppError.unauthorized('Invalid token');

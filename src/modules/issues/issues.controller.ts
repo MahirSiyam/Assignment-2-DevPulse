@@ -77,3 +77,17 @@ export async function updateIssue(req: Request, res: Response): Promise<void> {
     data: { issue },
   });
 }
+
+export async function deleteIssue(req: Request, res: Response): Promise<void> {
+  const validation = validateIssueIdParam(req.params);
+  if (!validation.valid) {
+    throw AppError.badRequest('Validation failed', validation.errors);
+  }
+
+  await issuesService.deleteIssue(validation.data);
+
+  sendResponse(res, {
+    message: 'Issue deleted successfully',
+    data: {},
+  });
+}

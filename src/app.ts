@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { config } from './config/index';
 import { globalErrorHandler } from './middleware/globalErrorHandler';
+import { jsonParseErrorHandler } from './middleware/jsonParseErrorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { apiRouter } from './routes/index';
 
@@ -21,6 +22,7 @@ export function createApp(): Application {
   app.use(config.api.prefix, apiRouter);
 
   app.use(notFoundHandler);
+  app.use(jsonParseErrorHandler);
   app.use(globalErrorHandler);
 
   return app;

@@ -22,3 +22,10 @@ issuesRouter.patch(
   authorize('contributor', 'maintainer'),
   catchAsync(issuesController.updateIssue),
 );
+
+issuesRouter.delete(
+  '/:id',
+  authenticate,
+  authorize('maintainer'),
+  catchAsync(issuesController.deleteIssue),
+);

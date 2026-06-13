@@ -1,9 +1,10 @@
 import type { Request, Response } from 'express';
-import { sendError } from '../utils/sendResponse';
+import { sendHttpError } from '../utils/errorResponse';
+import { HTTP_STATUS } from '../constants/httpStatus';
 
 export function notFoundHandler(_req: Request, res: Response): void {
-  sendError(res, {
-    statusCode: 404,
+  sendHttpError(res, {
+    statusCode: HTTP_STATUS.NOT_FOUND,
     message: 'Route not found',
     errors: {},
   });

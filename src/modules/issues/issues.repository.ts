@@ -121,3 +121,12 @@ export async function updateIssue(id: number, input: UpdateIssueInput): Promise<
 
   return rows[0] ?? null;
 }
+
+export async function deleteIssueById(id: number): Promise<boolean> {
+  const { rowCount } = await query(
+    `DELETE FROM issues WHERE id = $1`,
+    [id],
+  );
+
+  return rowCount !== null && rowCount > 0;
+}

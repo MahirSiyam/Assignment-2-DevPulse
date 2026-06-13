@@ -1,3 +1,5 @@
+import { HTTP_STATUS, HTTP_ERROR_MESSAGES } from '../constants/httpStatus';
+
 export class AppError extends Error {
   public readonly statusCode: number;
   public readonly isOperational: boolean;
@@ -17,29 +19,40 @@ export class AppError extends Error {
   }
 
   static badRequest(
-    message: string,
+    message = HTTP_ERROR_MESSAGES[HTTP_STATUS.BAD_REQUEST] ?? 'Bad request',
     errors: Record<string, string | string[]> = {},
   ): AppError {
-    return new AppError(400, message, errors);
+    return new AppError(HTTP_STATUS.BAD_REQUEST, message, errors);
   }
 
-  static unauthorized(message = 'Unauthorized'): AppError {
-    return new AppError(401, message);
+  static unauthorized(
+    message = HTTP_ERROR_MESSAGES[HTTP_STATUS.UNAUTHORIZED] ?? 'Unauthorized',
+  ): AppError {
+    return new AppError(HTTP_STATUS.UNAUTHORIZED, message);
   }
 
-  static forbidden(message = 'Forbidden'): AppError {
-    return new AppError(403, message);
+  static forbidden(
+    message = HTTP_ERROR_MESSAGES[HTTP_STATUS.FORBIDDEN] ?? 'Forbidden',
+  ): AppError {
+    return new AppError(HTTP_STATUS.FORBIDDEN, message);
   }
 
-  static notFound(message = 'Resource not found'): AppError {
-    return new AppError(404, message);
+  static notFound(
+    message = HTTP_ERROR_MESSAGES[HTTP_STATUS.NOT_FOUND] ?? 'Not found',
+  ): AppError {
+    return new AppError(HTTP_STATUS.NOT_FOUND, message);
   }
 
-  static conflict(message: string, errors: Record<string, string | string[]> = {}): AppError {
-    return new AppError(409, message, errors);
+  static conflict(
+    message = HTTP_ERROR_MESSAGES[HTTP_STATUS.CONFLICT] ?? 'Conflict',
+    errors: Record<string, string | string[]> = {},
+  ): AppError {
+    return new AppError(HTTP_STATUS.CONFLICT, message, errors);
   }
 
-  static internal(message = 'Internal server error'): AppError {
-    return new AppError(500, message, {}, false);
+  static internal(
+    message = HTTP_ERROR_MESSAGES[HTTP_STATUS.INTERNAL_SERVER_ERROR] ?? 'Internal server error',
+  ): AppError {
+    return new AppError(HTTP_STATUS.INTERNAL_SERVER_ERROR, message, {}, false);
   }
 }
