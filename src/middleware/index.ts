@@ -1,3 +1,3 @@
-export { errorHandler } from './errorHandler';
+export { globalErrorHandler } from './globalErrorHandler';
 export { notFoundHandler } from './notFoundHandler';
-export { asyncHandler } from './asyncHandler';
+export { catchAsync } from '../utils/catchAsync';

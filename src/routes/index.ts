@@ -1,13 +1,6 @@
 import { Router } from 'express';
+import { authRouter } from '../modules/auth/auth.routes';
 
-/**
- * Central route aggregator.
- * Mount module routers here as features are implemented.
- *
- * Example:
- *   import { authRouter } from '../modules/auth/auth.routes';
- *   router.use('/auth', authRouter);
- */
 export const apiRouter = Router();
 
-// Module routes will be registered here
+apiRouter.use('/auth', authRouter);

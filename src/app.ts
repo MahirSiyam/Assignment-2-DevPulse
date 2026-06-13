@@ -2,7 +2,7 @@ import express, { type Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { config } from './config/index';
-import { errorHandler } from './middleware/errorHandler';
+import { globalErrorHandler } from './middleware/globalErrorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { apiRouter } from './routes/index';
 
@@ -21,7 +21,7 @@ export function createApp(): Application {
   app.use(config.api.prefix, apiRouter);
 
   app.use(notFoundHandler);
-  app.use(errorHandler);
+  app.use(globalErrorHandler);
 
   return app;
 }
