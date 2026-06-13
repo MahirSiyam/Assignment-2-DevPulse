@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { jwtConfig } from '../../config/auth';
 import { AppError } from '../../utils/AppError';
+import { signAccessToken } from '../../utils/jwtHelper';
 import * as authRepository from './auth.repository';
 import type { JwtPayload, LoginInput, LoginResponse, PublicUser, SignupInput } from './auth.types';
 
@@ -36,9 +35,7 @@ export async function login(input: LoginInput): Promise<LoginResponse> {
     role: user.role,
   };
 
-  const token = jwt.sign(payload, jwtConfig.access.secret, {
-    expiresIn: jwtConfig.access.expiresIn,
-  } as jwt.SignOptions);
+  const token = signAccessToken(payload);
 
   return { token };
 }

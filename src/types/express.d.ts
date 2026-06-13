@@ -1,13 +1,14 @@
 import type { Request } from 'express';
+import type { JwtPayload } from '../modules/auth/auth.types';
 
 declare global {
   namespace Express {
     interface Request {
-      userId?: string;
+      user?: JwtPayload;
     }
   }
 }
 
-export type AuthenticatedRequest = Request & {
-  userId: string;
-};
+export interface AuthenticatedRequest extends Request {
+  user: JwtPayload;
+}
