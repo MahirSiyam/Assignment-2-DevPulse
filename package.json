@@ -13,10 +13,6 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "db:migrate": "node dist/scripts/migrate.js",
-    "db:migrate:dev": "tsx src/scripts/migrate.ts",
-    "db:seed": "node dist/scripts/seed.js",
-    "db:seed:dev": "tsx src/scripts/seed.ts",
     "clean": "rimraf dist"
   },
   "engines": {

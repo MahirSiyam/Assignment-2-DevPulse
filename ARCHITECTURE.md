@@ -8,8 +8,6 @@ Production-ready Node.js + TypeScript + Express + PostgreSQL backend with modula
 
 ```
 DevPulse/
-├── migrations/                  # Versioned .sql migration files
-├── sql/                         # Schema definitions & seed data
 ├── src/
 │   ├── app.ts                   # Express application factory
 │   ├── server.ts                # HTTP server bootstrap & graceful shutdown
@@ -17,6 +15,10 @@ DevPulse/
 │   │   ├── index.ts             # Environment variable loading & validation
 │   │   ├── database.ts          # pg Pool + query() helper
 │   │   └── auth.ts              # JWT & bcrypt configuration constants
+│   ├── database/
+│   │   ├── schema.sql             # PostgreSQL schema (run via Neon SQL Editor)
+│   │   └── seeds/
+│   │       └── dev.sql            # Development seed data
 │   ├── middleware/
 │   │   ├── index.ts             # Middleware barrel exports
 │   │   ├── asyncHandler.ts      # Async route error wrapper
@@ -36,9 +38,6 @@ DevPulse/
 │   │       └── template.validators.ts
 │   ├── routes/
 │   │   └── index.ts             # Central API router — mounts module routes
-│   ├── scripts/
-│   │   ├── migrate.ts           # Migration runner (placeholder)
-│   │   └── seed.ts              # Seed runner (placeholder)
 │   ├── types/
 │   │   ├── express.d.ts         # Express Request augmentation
 │   │   └── index.ts             # Shared application types
@@ -106,19 +105,19 @@ Each feature domain lives in its own folder (copy `_template/`). Layers:
 | `logger.ts` | Structured JSON logging with configurable log level |
 | `index.ts` | Re-exports shared utilities |
 
+### `database/`
+
+| File | Responsibility |
+|------|----------------|
+| `schema.sql` | Full PostgreSQL schema — run manually in Neon SQL Editor |
+| `seeds/dev.sql` | Development seed data — run manually after schema |
+
 ### `types/`
 
 | File | Responsibility |
 |------|----------------|
 | `express.d.ts` | Augments Express `Request` with `userId` etc. |
 | `index.ts` | Shared types: `ApiResponse`, `PaginatedResult`, etc. |
-
-### Root-level SQL
-
-| Folder | Responsibility |
-|--------|----------------|
-| `migrations/` | Ordered, versioned `.sql` files executed by migrate script |
-| `sql/` | Reference schemas, seed data, ad-hoc queries |
 
 ---
 
@@ -222,10 +221,6 @@ Non-secret values (`API_PREFIX`, `CORS_ORIGIN`, `BCRYPT_SALT_ROUNDS`, pool setti
 | `lint:fix` | `eslint src --ext .ts --fix` | Auto-fix lint issues |
 | `format` | `prettier --write "src/**/*.ts"` | Format all source files |
 | `format:check` | `prettier --check "src/**/*.ts"` | Check formatting |
-| `db:migrate` | `node dist/scripts/migrate.js` | Run migrations (production) |
-| `db:migrate:dev` | `tsx src/scripts/migrate.ts` | Run migrations (development) |
-| `db:seed` | `node dist/scripts/seed.js` | Run seeds (production) |
-| `db:seed:dev` | `tsx src/scripts/seed.ts` | Run seeds (development) |
 | `clean` | `rimraf dist` | Remove build output |
 
 ---
@@ -255,5 +250,9 @@ $env:PORT="3000"
 npm install
 npm run dev
 ```
+
+**Database setup** — run SQL files in Neon SQL Editor:
+1. `src/database/schema.sql`
+2. `src/database/seeds/dev.sql` (optional, for dev data)
 
 Health check: `GET http://localhost:3000/health`
