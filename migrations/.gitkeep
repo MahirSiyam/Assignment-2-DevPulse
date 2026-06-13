@@ -1,0 +1,2 @@
+-- Versioned migration files.
+-- Naming convention: 001_initial_schema.sql, 002_add_users_table.sql, etc.
